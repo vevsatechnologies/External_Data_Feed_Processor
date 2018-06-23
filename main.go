@@ -1,18 +1,22 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"reflect"
 
 	_ "github.com/lib/pq"
 )
 
 const (
+	host        = "localhost"
+	port        = 5432
 	db_user     = "postgres"
-	db_password = ""
+	db_password = "alisha"
 	db_name     = "data_feed_processor"
 )
 
@@ -109,6 +113,18 @@ func (p *Poloniex) getPoloniexData(currencyPair string, start string, end string
 
 func (b *Bittrex) getBittrexData(currencyPair string) {
 
+	dbinfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, db_user, db_password, db_name)
+
+	db, err := sql.Open("postgres", dbinfo)
+	if err != nil {
+		fmt.Println("Error")
+	}
+
+	defer db.Close()
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
 	url := "https://bittrex.com/api/v1.1/public/getmarkethistory"
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -136,12 +152,19 @@ func (b *Bittrex) getBittrexData(currencyPair string) {
 
 	json.Unmarshal(body, &data) // To decode the json data
 	// fmt.Println(string(body))
-	fmt.Printf("Results: %v\n", data)
-	// Loop over structs and display them.
-	// for l := range data {
-	// 	fmt.Printf("Id = %v, Name = %v", data[l].Message, data[l].Timestamp)
-	// 	fmt.Println()
-	// }
+	fmt.Printf("Results: %v\n", data.Result[0])
+
+	fmt.Println(reflect.TypeOf(data.Result[0]))
+	// var resultData ResultArray
+
+	//Loop over structs and display them.
+	for i := range data.Result {
+
+		sqlStatement := `INSERT INTO bittrex_historic_data(tradeid,timestamp,quantity,price,total,fill_type,order_type) VALUES($1,$2,$3,$4,$5,$6,$7)`
+		_, err = db.Exec(sqlStatement, data.Result[i].ID, data.Result[i].Timestamp, data.Result[i].Quantity, data.Result[i].Price, data.Result[i].Total, data.Result[i].Filltype, data.Result[i].Ordertype)
+
+		fmt.Println()
+	}
 	return
 
 }
