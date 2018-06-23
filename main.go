@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	DB_USER     = "postgres"
-	DB_PASSWORD = ""
-	DB_NAME     = "data_feed_processor"
+	db_user     = "postgres"
+	db_password = ""
+	db_name     = "data_feed_processor"
 )
 
 type Poloniex struct {
@@ -43,13 +43,27 @@ type Bittrex struct {
 	}
 }
 type bittrexData struct {
-	ID        int64   `json: "ID"`
-	Timestamp string  `json: "TimeStamp"`
-	Quantity  float64 `json: "Quantity"`
+	Success string `json:"success"`
+	Message string `json:"message"`
+
+	Result []ResultArray `json:"result"`
+}
+
+//ResultArray Export the values to ResultArray struct
+type ResultArray struct {
+	ID        int64   `json:"Id"`
+	Timestamp string  `json:"TimeStamp"`
+	Quantity  float64 `json:"Quantity"`
 	Price     float64 `json:"Price"`
 	Total     float64 `json:"Total"`
 	Filltype  string  `json:"FillType"`
 	Ordertype string  `json:"OrderType"`
+}
+
+type databaseInfo struct {
+	db_user     string
+	db_password string
+	db_name     string
 }
 
 func main() {
@@ -105,23 +119,29 @@ func (b *Bittrex) getBittrexData(currencyPair string) {
 
 	req.URL.RawQuery = q.Encode()
 
-	fmt.Println(req.URL.String())
+	fmt.Println(req.URL.String()) //to test if the url sent is correct
 
 	request, err := http.NewRequest("GET", req.URL.String(), nil)
 
 	res, _ := b.client.Do(request)
 
-	fmt.Println(res.StatusCode)
+	fmt.Println(res.StatusCode) // To check the status code of response
+
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		panic(err.Error())
 	}
 
 	var data bittrexData
-	json.Unmarshal(body, &data)
-	fmt.Println(string(body))
+
+	json.Unmarshal(body, &data) // To decode the json data
+	// fmt.Println(string(body))
 	fmt.Printf("Results: %v\n", data)
-	os.Exit(0)
+	// Loop over structs and display them.
+	// for l := range data {
+	// 	fmt.Printf("Id = %v, Name = %v", data[l].Message, data[l].Timestamp)
+	// 	fmt.Println()
+	// }
 	return
 
 }
