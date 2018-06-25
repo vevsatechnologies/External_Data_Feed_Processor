@@ -1,193 +1,91 @@
 package main
 
 import (
-	"database/sql"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
-	"os"
-	"reflect"
+	"time"
 
 	_ "github.com/lib/pq"
 )
 
-const (
-	host        = "localhost"
-	port        = 5432
-	db_user     = "postgres"
-	db_password = "alisha"
-	db_name     = "data_feed_processor"
-)
-
-type Poloniex struct {
-	client             *http.Client
-	poloniexParameters struct {
-		url          string
-		currencyPair string
-		start        string
-		end          string
-	}
-}
-
-type poloniexData struct {
-	GlobalTradeID int64   `json:"globalTradeID"`
-	TradeID       string  `json:"tradeID"`
-	Date          string  `json:"date"`
-	Types         string  `json:"type"`
-	Rate          float64 `json:"rate"`
-	Amount        float64 `json:"amount"`
-	Total         float64 `json:"total"`
-}
-type Bittrex struct {
-	client            *http.Client
-	bittrexParameters struct {
-		url    string
-		market string
-	}
-}
-type bittrexData struct {
-	Success string `json:"success"`
-	Message string `json:"message"`
-
-	Result []ResultArray `json:"result"`
-}
-
-//ResultArray Export the values to ResultArray struct
-type ResultArray struct {
-	ID        int64   `json:"Id"`
-	Timestamp string  `json:"TimeStamp"`
-	Quantity  float64 `json:"Quantity"`
-	Price     float64 `json:"Price"`
-	Total     float64 `json:"Total"`
-	Filltype  string  `json:"FillType"`
-	Ordertype string  `json:"OrderType"`
-}
-
-type databaseInfo struct {
-	db_user     string
-	db_password string
-	db_name     string
-}
-
 func main() {
 
-	getHistoricData(1, "BTC-DCR", "", "")
+	fetchHistoricData(1, "") //parameters : exchangeID,currency pair, start time, end time
+	for {
+		getHistoricData(1, "BTC-DCR", "1514764800", "1514851200")   //parameters : exchangeID,currency pair, start time, end time
+		getTickData("BTC_DCR")                                      //parameters :  Currency pair
+		getPoloniexChartData("BTC_DCR", "1405699200", "9999999999") //parameters: Currency Pair, start time , end time
+	}
 
 }
 
-func (p *Poloniex) getPoloniexData(currencyPair string, start string, end string) string {
+// Exchange id = 0 for Poloneix
+// Exchange id =1 for Bittrex
 
-	url := "https://poloniex.com/public?command=returnTradeHistory"
+func fetchHistoricData(exchangeID int, date string) {
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		panic(err.Error())
+	if exchangeID == 0 { //Poloniex exchange
+		user := Poloniex{
+
+			client: &http.Client{},
+		}
+		user.fetchPoloniexData(date)
+
 	}
 
-	q := req.URL.Query()
-	q.Add("currencyPair", currencyPair)
-	q.Add("start", start)
-	q.Add("end", end)
-	req.URL.RawQuery = q.Encode()
+	if exchangeID == 1 { //Bittrex Exchange
 
-	fmt.Println(req.URL.String())
-
-	request, err := http.NewRequest("GET", req.URL.String(), nil)
-
-	res, _ := p.client.Do(request)
-
-	fmt.Println(res.StatusCode)
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		panic(err.Error())
+		user := Bittrex{
+			client: &http.Client{},
+		}
+		user.fetchBittrexData(date)
 	}
 
-	var data poloniexData
-	json.Unmarshal(body, &data)
-	fmt.Println(string(body))
-	fmt.Printf("Results: %v\n", data.Types)
-	os.Exit(0)
-	return "Okay"
 }
 
-func (b *Bittrex) getBittrexData(currencyPair string) {
-
-	dbinfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, db_user, db_password, db_name)
-
-	db, err := sql.Open("postgres", dbinfo)
-	if err != nil {
-		fmt.Println("Error")
-	}
-
-	defer db.Close()
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-	url := "https://bittrex.com/api/v1.1/public/getmarkethistory"
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		panic(err.Error())
-	}
-	q := req.URL.Query()
-	q.Add("market", currencyPair)
-
-	req.URL.RawQuery = q.Encode()
-
-	fmt.Println(req.URL.String()) //to test if the url sent is correct
-
-	request, err := http.NewRequest("GET", req.URL.String(), nil)
-
-	res, _ := b.client.Do(request)
-
-	fmt.Println(res.StatusCode) // To check the status code of response
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	var data bittrexData
-
-	json.Unmarshal(body, &data) // To decode the json data
-	// fmt.Println(string(body))
-	fmt.Printf("Results: %v\n", data.Result[0])
-
-	fmt.Println(reflect.TypeOf(data.Result[0]))
-	// var resultData ResultArray
-
-	//Loop over structs and display them.
-	for i := range data.Result {
-
-		sqlStatement := `INSERT INTO bittrex_historic_data(tradeid,timestamp,quantity,price,total,fill_type,order_type) VALUES($1,$2,$3,$4,$5,$6,$7)`
-		_, err = db.Exec(sqlStatement, data.Result[i].ID, data.Result[i].Timestamp, data.Result[i].Quantity, data.Result[i].Price, data.Result[i].Total, data.Result[i].Filltype, data.Result[i].Ordertype)
-
-		fmt.Println()
-	}
-	return
-
-}
+// Exchange id = 0 for Poloneix
+// Exchange id =1 for Bittrex
 
 func getHistoricData(exchangeID int, currencyPair string, startTime string, endTime string) {
 
-	if exchangeID == 0 { //poloneix exchange
-		user1 := Poloniex{
+	if exchangeID == 0 { //Poloniex exchange
+		user := Poloniex{
 
 			client: &http.Client{},
 		}
-		user1.getPoloniexData(currencyPair, startTime, endTime)
+		user.getPoloniexData(currencyPair, startTime, endTime)
 
 	}
 
-	if exchangeID == 1 { //bittrex Exchange
+	if exchangeID == 1 { //Bittrex Exchange
 
-		user2 := Bittrex{
+		user := Bittrex{
 			client: &http.Client{},
 		}
-		user2.getBittrexData(currencyPair)
+		user.getBittrexData(currencyPair)
 	}
+
+	//Time delay of 24 hours
+
+	time.Sleep(86400 * time.Second)
 }
 
-// 0 for poloneix
-// 1 for bittrex
+//Get ticker data from Bittrex exchange
+
+func getTickData(currencyPair string) {
+
+	user := Bittrex{
+		client: &http.Client{},
+	}
+	user.getTicks(currencyPair)
+
+}
+
+//Get chart data from Poloniex Exchange
+func getPoloniexChartData(currencyPair string, startTime string, endTime string) {
+	user := Poloniex{
+
+		client: &http.Client{},
+	}
+	user.getChartData(currencyPair, startTime, endTime)
+
+}
