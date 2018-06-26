@@ -1,11 +1,16 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+)
+
+const (
+	bittrexBaseURL = "https://bittrex.com/api/v1.1/public/getmarkethistory"
+
+	bittrexTicksURL = "https://bittrex.com/Api/v2.0/pub/market/GetTicks"
 )
 
 type Bittrex struct {
@@ -51,22 +56,7 @@ type ResultArray struct {
 
 func (b *Bittrex) getBittrexData(currencyPair string) {
 
-	//Create the Database Connection
-
-	dbinfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, db_user, db_password, db_name)
-
-	db, err := sql.Open("postgres", dbinfo)
-	if err != nil {
-		fmt.Println("Error")
-	}
-
-	defer db.Close()
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-
-	//Get the base url from constants.go
+	//Get the base url
 
 	url := bittrexBaseURL
 	req, err := http.NewRequest("GET", url, nil)
@@ -106,8 +96,8 @@ func (b *Bittrex) getBittrexData(currencyPair string) {
 
 	for i := range data.Result {
 
-		sqlStatement := `INSERT INTO bittrex_historic_data(tradeid,timestamp,quantity,price,total,fill_type,order_type) VALUES($1,$2,$3,$4,$5,$6,$7)`
-		_, err = db.Exec(sqlStatement, data.Result[i].ID, data.Result[i].Timestamp, data.Result[i].Quantity, data.Result[i].Price, data.Result[i].Total, data.Result[i].Filltype, data.Result[i].Ordertype)
+		sqlStatement := `INSERT INTO historicData(exchangeID,globaltradeid,tradeid,timestamp,quantity,price,total,fill_type,order_type) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`
+		_, err = db.Exec(sqlStatement, "1", data.Result[i].ID, "nil", data.Result[i].Timestamp, data.Result[i].Quantity, data.Result[i].Price, data.Result[i].Total, data.Result[i].Filltype, data.Result[i].Ordertype)
 
 		fmt.Println()
 	}
@@ -117,22 +107,9 @@ func (b *Bittrex) getBittrexData(currencyPair string) {
 
 func (b *Bittrex) fetchBittrexData(date string) {
 
-	//Create the Database Connection
+	//Fetch Data from historicData Table
 
-	dbinfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, db_user, db_password, db_name)
-
-	db, err := sql.Open("postgres", dbinfo)
-	if err != nil {
-		fmt.Println("Error")
-	}
-
-	defer db.Close()
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-
-	sqlStatement := `SELECT * FROM poloniex_historic_data where timestamp=$1`
+	sqlStatement := `SELECT * FROM historicData where timestamp=$1`
 	err = db.QueryRow(sqlStatement).Scan(&date)
 }
 
@@ -140,21 +117,6 @@ func (b *Bittrex) fetchBittrexData(date string) {
 //Parameters : Currency Pair
 
 func (b *Bittrex) getTicks(currencyPair string) {
-
-	//Create the connection with database
-
-	dbinfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, db_user, db_password, db_name)
-
-	db, err := sql.Open("postgres", dbinfo)
-	if err != nil {
-		fmt.Println("Error")
-	}
-
-	defer db.Close()
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
 
 	url := bittrexTicksURL
 	req, err := http.NewRequest("GET", url, nil)

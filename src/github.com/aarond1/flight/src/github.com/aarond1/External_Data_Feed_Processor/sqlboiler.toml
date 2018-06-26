@@ -1,0 +1,6 @@
+[postgres]
+
+dbname = "flight"
+user   = "boiler"
+pass   ="test"
+host   = "localhost"

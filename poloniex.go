@@ -1,11 +1,14 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+)
+
+const (
+	poloniexBaseURL = "https://poloniex.com/public"
 )
 
 // Structure containing Poloniex client data
@@ -48,22 +51,7 @@ type chartData struct {
 
 func (p *Poloniex) getPoloniexData(currencyPair string, start string, end string) string {
 
-	//Initiate Connection with Database
-
-	dbinfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, db_user, db_password, db_name)
-
-	db, err := sql.Open("postgres", dbinfo)
-	if err != nil {
-		fmt.Println("Error")
-	}
-
-	defer db.Close()
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-
-	//Get Url of Poloniex API from constants.go
+	//Get Url of Poloniex API
 
 	url := poloniexBaseURL
 
@@ -103,10 +91,9 @@ func (p *Poloniex) getPoloniexData(currencyPair string, start string, end string
 	fmt.Printf("Results: %v\n", data)
 
 	//Loop over the entire list to insert data into the table
-
 	for i := range data.Result {
-		sqlStatement := `INSERT INTO poloniex_historic_data(globaltradeid,tradeid,date,type,rate,amount,total) VALUES($1,$2,$3,$4,$5,$6,$7)`
-		_, err = db.Exec(sqlStatement, data.Result[i].GlobalTradeID, data.Result[i].TradeID, data.Result[i].Date, data.Result[i].Types, data.Result[i].Rate, data.Result[i].Amount, data.Result[i].Total)
+		sqlStatement := `INSERT INTO historicData(exchangeID,globaltradeid,tradeid,timestamp,quantity,price,total,fill_type,order_type) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`
+		_, err = db.Exec(sqlStatement, "0", data.Result[i].GlobalTradeID, data.Result[i].TradeID, data.Result[i].Date, data.Result[i].Amount, data.Result[i].Rate, data.Result[i].Total, "nil", data.Result[i].Types)
 
 	}
 	return "Saved poloneix historic data!"
@@ -117,22 +104,7 @@ func (p *Poloniex) getPoloniexData(currencyPair string, start string, end string
 
 func (p *Poloniex) fetchPoloniexData(date string) {
 
-	//Initiate Connection with Database
-
-	dbinfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, db_user, db_password, db_name)
-
-	db, err := sql.Open("postgres", dbinfo)
-	if err != nil {
-		fmt.Println("Error")
-	}
-
-	defer db.Close()
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-
-	sqlStatement := `SELECT * FROM poloniex_historic_data where date=$1`
+	sqlStatement := `SELECT * FROM historicData where timestamp=$1`
 	err = db.QueryRow(sqlStatement).Scan(&date)
 
 }
@@ -142,22 +114,7 @@ func (p *Poloniex) fetchPoloniexData(date string) {
 
 func (p *Poloniex) getChartData(currencyPair string, start string, end string) {
 
-	//Initialise connection with database
-
-	dbinfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, db_user, db_password, db_name)
-
-	db, err := sql.Open("postgres", dbinfo)
-	if err != nil {
-		fmt.Println("Error")
-	}
-
-	defer db.Close()
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-
-	//Get URL from constants.go
+	//Get the base URL
 
 	url := poloniexBaseURL
 

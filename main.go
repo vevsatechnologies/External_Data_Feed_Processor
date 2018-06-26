@@ -1,11 +1,15 @@
 package main
 
 import (
+	"database/sql"
 	"net/http"
 	"time"
 
 	_ "github.com/lib/pq"
 )
+
+// Open handle to database like normal
+var db, err = sql.Open("postgres", "dbname=data_feed_processor,user=postgres")
 
 func main() {
 
