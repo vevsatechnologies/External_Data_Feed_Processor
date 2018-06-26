@@ -157,8 +157,8 @@ func (b *Bittrex) getTicks(currencyPair string) {
 	//Loop over array of struct and stores the response in table
 	for i := range data.Result {
 
-		sqlStatement := `INSERT INTO bittrex_historic_data(O,H,L,C,V,T,BV) VALUES($1,$2,$3,$4,$5,$6,$7)`
-		_, err = db.Exec(sqlStatement, data.Result[i].O, data.Result[i].H, data.Result[i].L, data.Result[i].C, data.Result[i].V, data.Result[i].T, data.Result[i].BV)
+		sqlStatement := `INSERT INTO chartData(exhcangeID,date,high,low,open,close,volume,quoteVolume,baseVolume,weightedAverage) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`
+		_, err = db.Exec(sqlStatement, "1", data.Result[i].T, data.Result[i].H, data.Result[i].L, data.Result[i].O, data.Result[i].C, data.Result[i].V, "nil", data.Result[i].BV, "nil")
 
 		fmt.Println()
 	}

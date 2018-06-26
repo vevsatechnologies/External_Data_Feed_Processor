@@ -152,8 +152,8 @@ func (p *Poloniex) getChartData(currencyPair string, start string, end string) {
 
 	//Loop over the entire data and store it in the table
 	for i := range data.Result {
-		sqlStatement := `INSERT INTO poloniex_chart_data(date,high,low,open,close,volume,quoteVolume,weightedAverage) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`
-		_, err = db.Exec(sqlStatement, data.Result[i].Date, data.Result[i].High, data.Result[i].Low, data.Result[i].Open, data.Result[i].Close, data.Result[i].Volume, data.Result[i].QuoteVolume, data.Result[i].WeightedAverage)
+		sqlStatement := `INSERT INTO chartData(exhcangeID,date,high,low,open,close,volume,quoteVolume,baseVolume,weightedAverage) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`
+		_, err = db.Exec(sqlStatement, "0", data.Result[i].Date, data.Result[i].High, data.Result[i].Low, data.Result[i].Open, data.Result[i].Close, data.Result[i].Volume, data.Result[i].QuoteVolume, "nil", data.Result[i].WeightedAverage)
 
 	}
 

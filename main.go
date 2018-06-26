@@ -15,9 +15,8 @@ func main() {
 
 	fetchHistoricData(1, "") //parameters : exchangeID,currency pair, start time, end time
 	for {
-		getHistoricData(1, "BTC-DCR", "1514764800", "1514851200")   //parameters : exchangeID,currency pair, start time, end time
-		getTickData("BTC_DCR")                                      //parameters :  Currency pair
-		getPoloniexChartData("BTC_DCR", "1405699200", "9999999999") //parameters: Currency Pair, start time , end time
+		getHistoricData(1, "BTC-DCR", "1514764800", "1514851200")   //parameters : exchangeID,currency pair, start time, end time                                    //parameters :  Currency pair
+		getChartData(1,"BTC_DCR", "1405699200", "9999999999") //parameters: exchange id,Currency Pair, start time , end time
 	}
 
 }
@@ -73,23 +72,26 @@ func getHistoricData(exchangeID int, currencyPair string, startTime string, endT
 	time.Sleep(86400 * time.Second)
 }
 
-//Get ticker data from Bittrex exchange
+//Get chart data from exchanges
+// if exchange id =0 , get chart data from poloniex exchange
+// exchange id =1  get chart data from bittrex exchange
 
-func getTickData(currencyPair string) {
+func getChartData(exchangeID int, currencyPair string, startTime string, endTime string) {
 
-	user := Bittrex{
+	if exchangeID == 0 {
+		user := Poloniex{
+
+			client: &http.Client{},
+		}
+		user.getChartData(currencyPair, startTime, endTime)
+	
+	}
+	if exchangeID ==1 {
+		user := Bittrex{
 		client: &http.Client{},
 	}
 	user.getTicks(currencyPair)
 
 }
 
-//Get chart data from Poloniex Exchange
-func getPoloniexChartData(currencyPair string, startTime string, endTime string) {
-	user := Poloniex{
 
-		client: &http.Client{},
-	}
-	user.getChartData(currencyPair, startTime, endTime)
-
-}
