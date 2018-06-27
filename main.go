@@ -13,11 +13,13 @@ var db, err = sql.Open("postgres", "dbname=data_feed_processor,user=postgres")
 
 func main() {
 
-	fetchHistoricData(1, "") //parameters : exchangeID,currency pair, start time, end time
-	for {
-		getHistoricData(1, "BTC-DCR", "1514764800", "1514851200")   //parameters : exchangeID,currency pair, start time, end time                                    //parameters :  Currency pair
-		getChartData(1,"BTC_DCR", "1405699200", "9999999999") //parameters: exchange id,Currency Pair, start time , end time
-	}
+	// fetchHistoricData(1, "") //parameters : exchangeID,currency pair, start time, end time
+	getPOSdata()
+	// for {
+	// 	getHistoricData(1, "BTC-DCR", "1514764800", "1514851200")   //parameters : exchangeID,currency pair, start time, end time                                    //parameters :  Currency pair
+	// 	getChartData(1,"BTC_DCR", "1405699200", "9999999999") //parameters: exchange id,Currency Pair, start time , end time
+
+	// }
 
 }
 
@@ -43,6 +45,15 @@ func fetchHistoricData(exchangeID int, date string) {
 		user.fetchBittrexData(date)
 	}
 
+}
+
+func getPOSdata() {
+
+	user := POS{
+		client: &http.Client{},
+	}
+
+	user.POSdata()
 }
 
 // Exchange id = 0 for Poloneix
@@ -84,14 +95,14 @@ func getChartData(exchangeID int, currencyPair string, startTime string, endTime
 			client: &http.Client{},
 		}
 		user.getChartData(currencyPair, startTime, endTime)
-	
+
 	}
-	if exchangeID ==1 {
+	if exchangeID == 1 {
 		user := Bittrex{
-		client: &http.Client{},
+			client: &http.Client{},
+		}
+		user.getTicks(currencyPair)
+
 	}
-	user.getTicks(currencyPair)
 
 }
-
-
