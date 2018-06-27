@@ -53,7 +53,7 @@ func getPOSdata() {
 		client: &http.Client{},
 	}
 
-	user.POSdata()
+	user.getPOS()
 }
 
 // Exchange id = 0 for Poloneix
