@@ -21,6 +21,8 @@ func main() {
 
 	// }
 
+	getPOWData(2, "") //parameters: pool id
+
 }
 
 // Exchange id = 0 for Poloneix
@@ -54,6 +56,51 @@ func getPOSdata() {
 	}
 
 	user.getPOS()
+}
+
+func getPOWData(PoolID int, api_key string) {
+
+	user := POW{
+		client: &http.Client{},
+	}
+	if PoolID == 1 {
+		url := url1
+		user.getPOW(PoolID, url, api_key)
+	}
+	if PoolID == 2 {
+		url := url2
+		user.getPOW(PoolID, url, api_key)
+	}
+
+	if PoolID == 3 {
+		url := url3
+		user.getPOW(PoolID, url, api_key)
+	}
+
+	if PoolID == 4 {
+		url := url4
+		user.getPOW(PoolID, url, api_key)
+	}
+
+	if PoolID == 5 {
+		url := url5
+		user.getPOW(PoolID, url, api_key)
+	}
+
+	if PoolID == 6 {
+		url := url6
+		user.getPOW(PoolID, url, api_key)
+	}
+	if PoolID == 7 {
+		url := url7
+		user.getPOW(PoolID, url, api_key)
+	}
+
+	if PoolID == 8 {
+		url := url8
+		user.getPOW(PoolID, url, api_key)
+	}
+
 }
 
 // Exchange id = 0 for Poloneix
