@@ -1,17 +1,38 @@
 package main
 
+// go:generate sqlboiler postgres
+
 import (
 	"database/sql"
 	"net/http"
 	"time"
 
+	"github.com/alishaagupta/External_Data_Feed_Processor/models"
 	_ "github.com/lib/pq"
+	"github.com/vattle/sqlboiler/boil"
+	log15 "gopkg.in/inconshreveable/log15.v2"
+
+	. "github.com/volatiletech/sqlboiler/queries/qm"
 )
 
 // Open handle to database like normal
-var db, err = sql.Open("postgres", "dbname=data_feed_processor,user=postgres")
+var log = log15.New()
 
 func main() {
+
+	db, err := sql.Open("postgres", "dbname=data_feed_processor user=postgres host=localhost password=alisha")
+	if err != nil {
+		panic(err.Error())
+		return
+	}
+
+	boil.SetDB(db)
+
+	p := &models.bittrex_historic_data(db)
+
+	// p := &models.bittrex_historic_data(db)
+
+	// models.bittrex_historic_data(db).All()
 
 	// fetchHistoricData(1, "") //parameters : exchangeID,currency pair, start time, end time
 	getPOSdata()
@@ -21,7 +42,7 @@ func main() {
 
 	// }
 
-	getPOWData(2, "") //parameters: pool id
+	// getPOWData(2, "") //parameters: pool id
 
 }
 

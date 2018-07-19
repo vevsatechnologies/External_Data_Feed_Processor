@@ -92,7 +92,7 @@ func (p *Poloniex) getPoloniexData(currencyPair string, start string, end string
 
 	//Loop over the entire list to insert data into the table
 	for i := range data.Result {
-		sqlStatement := `INSERT INTO historicData(exchangeID,globaltradeid,tradeid,timestamp,quantity,price,total,fill_type,order_type) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`
+		sqlStatement := `INSERT INTO historic_data(exchangeID,globaltradeid,tradeid,timestamp,quantity,price,total,fill_type,order_type) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`
 		_, err = db.Exec(sqlStatement, "0", data.Result[i].GlobalTradeID, data.Result[i].TradeID, data.Result[i].Date, data.Result[i].Amount, data.Result[i].Rate, data.Result[i].Total, "nil", data.Result[i].Types)
 
 	}

@@ -96,7 +96,7 @@ func (b *Bittrex) getBittrexData(currencyPair string) {
 
 	for i := range data.Result {
 
-		sqlStatement := `INSERT INTO historicData(exchangeID,globaltradeid,tradeid,timestamp,quantity,price,total,fill_type,order_type) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`
+		sqlStatement := `INSERT INTO historic_data(exchangeID,globaltradeid,tradeid,timestamp,quantity,price,total,fill_type,order_type) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`
 		_, err = db.Exec(sqlStatement, "1", data.Result[i].ID, "nil", data.Result[i].Timestamp, data.Result[i].Quantity, data.Result[i].Price, data.Result[i].Total, data.Result[i].Filltype, data.Result[i].Ordertype)
 
 		fmt.Println()
