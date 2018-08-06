@@ -4,15 +4,15 @@
 package models
 
 var TableNames = struct {
-	BittrexHistoricData  string
-	Data                 string
-	PoloniexHistoricData string
-	Posdatatable         string
-	Powdatatable         string
+	ChartData    string
+	Data         string
+	HistoricData string
+	NewTable     string
+	Posdata      string
 }{
-	BittrexHistoricData:  "bittrex_historic_data",
-	Data:                 "data",
-	PoloniexHistoricData: "poloniex_historic_data",
-	Posdatatable:         "posdatatable",
-	Powdatatable:         "powdatatable",
+	ChartData:    "chart_data",
+	Data:         "data",
+	HistoricData: "historic_data",
+	NewTable:     "new_table",
+	Posdata:      "posdata",
 }

@@ -12,104 +12,104 @@ import "testing"
 // It does NOT run each operation group in parallel.
 // Separating the tests thusly grants avoidance of Postgres deadlocks.
 func TestParent(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricData)
+	t.Run("ChartData", testChartData)
 	t.Run("Data", testData)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricData)
-	t.Run("Posdatatables", testPosdatatables)
-	t.Run("Powdatatables", testPowdatatables)
+	t.Run("HistoricData", testHistoricData)
+	t.Run("NewTables", testNewTables)
+	t.Run("Posdata", testPosdata)
 }
 
 func TestDelete(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataDelete)
+	t.Run("ChartData", testChartDataDelete)
 	t.Run("Data", testDataDelete)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataDelete)
-	t.Run("Posdatatables", testPosdatatablesDelete)
-	t.Run("Powdatatables", testPowdatatablesDelete)
+	t.Run("HistoricData", testHistoricDataDelete)
+	t.Run("NewTables", testNewTablesDelete)
+	t.Run("Posdata", testPosdataDelete)
 }
 
 func TestQueryDeleteAll(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataQueryDeleteAll)
+	t.Run("ChartData", testChartDataQueryDeleteAll)
 	t.Run("Data", testDataQueryDeleteAll)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataQueryDeleteAll)
-	t.Run("Posdatatables", testPosdatatablesQueryDeleteAll)
-	t.Run("Powdatatables", testPowdatatablesQueryDeleteAll)
+	t.Run("HistoricData", testHistoricDataQueryDeleteAll)
+	t.Run("NewTables", testNewTablesQueryDeleteAll)
+	t.Run("Posdata", testPosdataQueryDeleteAll)
 }
 
 func TestSliceDeleteAll(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataSliceDeleteAll)
+	t.Run("ChartData", testChartDataSliceDeleteAll)
 	t.Run("Data", testDataSliceDeleteAll)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataSliceDeleteAll)
-	t.Run("Posdatatables", testPosdatatablesSliceDeleteAll)
-	t.Run("Powdatatables", testPowdatatablesSliceDeleteAll)
+	t.Run("HistoricData", testHistoricDataSliceDeleteAll)
+	t.Run("NewTables", testNewTablesSliceDeleteAll)
+	t.Run("Posdata", testPosdataSliceDeleteAll)
 }
 
 func TestExists(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataExists)
+	t.Run("ChartData", testChartDataExists)
 	t.Run("Data", testDataExists)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataExists)
-	t.Run("Posdatatables", testPosdatatablesExists)
-	t.Run("Powdatatables", testPowdatatablesExists)
+	t.Run("HistoricData", testHistoricDataExists)
+	t.Run("NewTables", testNewTablesExists)
+	t.Run("Posdata", testPosdataExists)
 }
 
 func TestFind(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataFind)
+	t.Run("ChartData", testChartDataFind)
 	t.Run("Data", testDataFind)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataFind)
-	t.Run("Posdatatables", testPosdatatablesFind)
-	t.Run("Powdatatables", testPowdatatablesFind)
+	t.Run("HistoricData", testHistoricDataFind)
+	t.Run("NewTables", testNewTablesFind)
+	t.Run("Posdata", testPosdataFind)
 }
 
 func TestBind(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataBind)
+	t.Run("ChartData", testChartDataBind)
 	t.Run("Data", testDataBind)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataBind)
-	t.Run("Posdatatables", testPosdatatablesBind)
-	t.Run("Powdatatables", testPowdatatablesBind)
+	t.Run("HistoricData", testHistoricDataBind)
+	t.Run("NewTables", testNewTablesBind)
+	t.Run("Posdata", testPosdataBind)
 }
 
 func TestOne(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataOne)
+	t.Run("ChartData", testChartDataOne)
 	t.Run("Data", testDataOne)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataOne)
-	t.Run("Posdatatables", testPosdatatablesOne)
-	t.Run("Powdatatables", testPowdatatablesOne)
+	t.Run("HistoricData", testHistoricDataOne)
+	t.Run("NewTables", testNewTablesOne)
+	t.Run("Posdata", testPosdataOne)
 }
 
 func TestAll(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataAll)
+	t.Run("ChartData", testChartDataAll)
 	t.Run("Data", testDataAll)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataAll)
-	t.Run("Posdatatables", testPosdatatablesAll)
-	t.Run("Powdatatables", testPowdatatablesAll)
+	t.Run("HistoricData", testHistoricDataAll)
+	t.Run("NewTables", testNewTablesAll)
+	t.Run("Posdata", testPosdataAll)
 }
 
 func TestCount(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataCount)
+	t.Run("ChartData", testChartDataCount)
 	t.Run("Data", testDataCount)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataCount)
-	t.Run("Posdatatables", testPosdatatablesCount)
-	t.Run("Powdatatables", testPowdatatablesCount)
+	t.Run("HistoricData", testHistoricDataCount)
+	t.Run("NewTables", testNewTablesCount)
+	t.Run("Posdata", testPosdataCount)
 }
 
 func TestHooks(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataHooks)
+	t.Run("ChartData", testChartDataHooks)
 	t.Run("Data", testDataHooks)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataHooks)
-	t.Run("Posdatatables", testPosdatatablesHooks)
-	t.Run("Powdatatables", testPowdatatablesHooks)
+	t.Run("HistoricData", testHistoricDataHooks)
+	t.Run("NewTables", testNewTablesHooks)
+	t.Run("Posdata", testPosdataHooks)
 }
 
 func TestInsert(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataInsert)
-	t.Run("BittrexHistoricData", testBittrexHistoricDataInsertWhitelist)
+	t.Run("ChartData", testChartDataInsert)
+	t.Run("ChartData", testChartDataInsertWhitelist)
 	t.Run("Data", testDataInsert)
 	t.Run("Data", testDataInsertWhitelist)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataInsert)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataInsertWhitelist)
-	t.Run("Posdatatables", testPosdatatablesInsert)
-	t.Run("Posdatatables", testPosdatatablesInsertWhitelist)
-	t.Run("Powdatatables", testPowdatatablesInsert)
-	t.Run("Powdatatables", testPowdatatablesInsertWhitelist)
+	t.Run("HistoricData", testHistoricDataInsert)
+	t.Run("HistoricData", testHistoricDataInsertWhitelist)
+	t.Run("NewTables", testNewTablesInsert)
+	t.Run("NewTables", testNewTablesInsertWhitelist)
+	t.Run("Posdata", testPosdataInsert)
+	t.Run("Posdata", testPosdataInsertWhitelist)
 }
 
 // TestToOne tests cannot be run in parallel
@@ -153,49 +153,49 @@ func TestToManySet(t *testing.T) {}
 func TestToManyRemove(t *testing.T) {}
 
 func TestReload(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataReload)
+	t.Run("ChartData", testChartDataReload)
 	t.Run("Data", testDataReload)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataReload)
-	t.Run("Posdatatables", testPosdatatablesReload)
-	t.Run("Powdatatables", testPowdatatablesReload)
+	t.Run("HistoricData", testHistoricDataReload)
+	t.Run("NewTables", testNewTablesReload)
+	t.Run("Posdata", testPosdataReload)
 }
 
 func TestReloadAll(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataReloadAll)
+	t.Run("ChartData", testChartDataReloadAll)
 	t.Run("Data", testDataReloadAll)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataReloadAll)
-	t.Run("Posdatatables", testPosdatatablesReloadAll)
-	t.Run("Powdatatables", testPowdatatablesReloadAll)
+	t.Run("HistoricData", testHistoricDataReloadAll)
+	t.Run("NewTables", testNewTablesReloadAll)
+	t.Run("Posdata", testPosdataReloadAll)
 }
 
 func TestSelect(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataSelect)
+	t.Run("ChartData", testChartDataSelect)
 	t.Run("Data", testDataSelect)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataSelect)
-	t.Run("Posdatatables", testPosdatatablesSelect)
-	t.Run("Powdatatables", testPowdatatablesSelect)
+	t.Run("HistoricData", testHistoricDataSelect)
+	t.Run("NewTables", testNewTablesSelect)
+	t.Run("Posdata", testPosdataSelect)
 }
 
 func TestUpdate(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataUpdate)
+	t.Run("ChartData", testChartDataUpdate)
 	t.Run("Data", testDataUpdate)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataUpdate)
-	t.Run("Posdatatables", testPosdatatablesUpdate)
-	t.Run("Powdatatables", testPowdatatablesUpdate)
+	t.Run("HistoricData", testHistoricDataUpdate)
+	t.Run("NewTables", testNewTablesUpdate)
+	t.Run("Posdata", testPosdataUpdate)
 }
 
 func TestSliceUpdateAll(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataSliceUpdateAll)
+	t.Run("ChartData", testChartDataSliceUpdateAll)
 	t.Run("Data", testDataSliceUpdateAll)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataSliceUpdateAll)
-	t.Run("Posdatatables", testPosdatatablesSliceUpdateAll)
-	t.Run("Powdatatables", testPowdatatablesSliceUpdateAll)
+	t.Run("HistoricData", testHistoricDataSliceUpdateAll)
+	t.Run("NewTables", testNewTablesSliceUpdateAll)
+	t.Run("Posdata", testPosdataSliceUpdateAll)
 }
 
 func TestUpsert(t *testing.T) {
-	t.Run("BittrexHistoricData", testBittrexHistoricDataUpsert)
+	t.Run("ChartData", testChartDataUpsert)
 	t.Run("Data", testDataUpsert)
-	t.Run("PoloniexHistoricData", testPoloniexHistoricDataUpsert)
-	t.Run("Posdatatables", testPosdatatablesUpsert)
-	t.Run("Powdatatables", testPowdatatablesUpsert)
+	t.Run("HistoricData", testHistoricDataUpsert)
+	t.Run("NewTables", testNewTablesUpsert)
+	t.Run("Posdata", testPosdataUpsert)
 }

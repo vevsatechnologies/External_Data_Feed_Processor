@@ -4,21 +4,64 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
+	"os"
+	"runtime/pprof"
 	"time"
 
-	"github.com/alishaagupta/External_Data_Feed_Processor/models"
 	_ "github.com/lib/pq"
 	"github.com/vattle/sqlboiler/boil"
+	// "github.com/vevsatechnologies/External_Data_Feed_Processor/tree/master/models"
 	log15 "gopkg.in/inconshreveable/log15.v2"
-
-	. "github.com/volatiletech/sqlboiler/queries/qm"
 )
+
+type Config struct {
+	historicData []string
+	chartData    string
+	posData      string
+	powData      []string
+}
 
 // Open handle to database like normal
 var log = log15.New()
 
+// mainCore does all the work. Deferred functions do not run after os.Exit(),
+// so main wraps this function, which returns a code.
+func mainCore() error {
+	// Parse the configuration file, and setup logger.
+	cfg, err := loadConfig()
+	if err != nil {
+		fmt.Printf("Failed to load dcrdata config: %s\n", err.Error())
+		return err
+	}
+
+	defer func() {
+		if logRotator != nil {
+			logRotator.Close()
+		}
+	}()
+
+	if cfg.CPUProfile != "" {
+		var f *os.File
+		f, err = os.Create(cfg.CPUProfile)
+		if err != nil {
+			return err
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
+}
+
 func main() {
+
+	if err := mainCore(); err != nil {
+		if logRotator != nil {
+			log.Error(err)
+		}
+		os.Exit(1)
+	}
+	os.Exit(0)
 
 	db, err := sql.Open("postgres", "dbname=data_feed_processor user=postgres host=localhost password=alisha")
 	if err != nil {
@@ -27,12 +70,6 @@ func main() {
 	}
 
 	boil.SetDB(db)
-
-	p := &models.bittrex_historic_data(db)
-
-	// p := &models.bittrex_historic_data(db)
-
-	// models.bittrex_historic_data(db).All()
 
 	// fetchHistoricData(1, "") //parameters : exchangeID,currency pair, start time, end time
 	getPOSdata()
